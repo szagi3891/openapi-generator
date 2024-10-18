@@ -1,8 +1,8 @@
 ### launching without parameters
 
 ```sh
-deno run -A
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json
+deno run -A \
+--import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json \
 https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts
 ```
 
@@ -13,10 +13,10 @@ https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/ma
 ./example/target - files will be generated to this directory (this directory must contain the file `spec.json`)
 
 ```sh
-deno run -A
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json
-https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts
-./example/spec_openapi.json
+deno run -A \
+--import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json \
+https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts \
+./example/spec_openapi.json \
 ./example/target
 ```
 
