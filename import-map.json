@@ -1,0 +1,9 @@
+{
+    "imports": {
+      "@reactive/utils": "jsr:@reactive/utils@^0.5.89",
+      "@std/assert": "jsr:@std/assert@1",
+      "@std/expect": "jsr:@std/expect@^1.0.5",
+      "zod": "npm:zod@^3.23.8"
+    }
+  }
+  
