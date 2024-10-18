@@ -1,0 +1,6 @@
+{
+    "blablabla": {
+        "method": "get",
+        "url": "/pets"
+    }
+}
