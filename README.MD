@@ -2,7 +2,7 @@
 
 ```sh
 deno run -A \
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json \
+--import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/deno.json \
 https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts
 ```
 
@@ -14,7 +14,7 @@ https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/ma
 
 ```sh
 deno run -A \
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/import-map.json \
+--import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/deno.json \
 https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts \
 ./example/spec_openapi.json \
 ./example/target
