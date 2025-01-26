@@ -1,4 +1,4 @@
-import { expect } from '@std/expect';
+import { expect } from '../lib.ts';
 import { convertRefPart, derefSchema, getFirstPrefixFromRef, getFromRef, isComponentsModelRef } from './isPrimitiveType.ts';
 
 const data = {

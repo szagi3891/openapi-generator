@@ -1,4 +1,4 @@
-import { expect } from '@std/expect';
+import { expect } from '../../lib.ts';
 import { convertParameters } from './convertParameters.ts';
 
 Deno.test('base 1', () => {

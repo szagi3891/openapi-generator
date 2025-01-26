@@ -1,4 +1,4 @@
-import { assertNever } from "@reactive/utils";
+import { assertNever } from "../../lib.ts";
 import { OpenApiType } from '../type.ts';
 
 const getAllRefsInner = (result: Array<string>, schema: OpenApiType): void => {

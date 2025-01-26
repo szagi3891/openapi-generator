@@ -1,4 +1,4 @@
-import { expect } from "@std/expect";
+import { expect } from '../lib.ts';
 import { getStructNameType, getStructNameZod } from './refName.ts';
 
 Deno.test('basic', () => {

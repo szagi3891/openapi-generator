@@ -1,26 +1,16 @@
-### launching without parameters
+### generate js methods based on openapi specification
+
+- ./example/spec_openapi.json - openapi specification
+- ./example/target - files will be generated to this directory (this directory must contain the file `spec.json`)
 
 ```sh
 deno run -A \
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/deno.json \
-https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts
-```
-
-### launch with parameters
-
-./example/spec_openapi.json - openapi specification
-
-./example/target - files will be generated to this directory (this directory must contain the file `spec.json`)
-
-```sh
-deno run -A \
---import-map=https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/deno.json \
 https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts \
 ./example/spec_openapi.json \
 ./example/target
 ```
 
-### Example contents of spec.json file
+### Example contents of target/spec.json file
 
 ```json
 {

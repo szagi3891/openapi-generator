@@ -6,7 +6,7 @@ import { renderEndpoint } from './openapi/render_template/renderEndpoint.ts';
 import { toBigCamelCase } from './openapi/render_template/toBigCamelCase.ts';
 import { renderModels } from './openapi/render_template/renderModels.ts';
 import type { TargetSpec } from "./openapi/TargetSpec.ts";
-import { assertNever, jsonParseRaw } from "@reactive/utils";
+import { assertNever, jsonParseRaw } from "./lib.ts";
 
 const getSpec = async (spec: SpecSourceType): Promise<JSONValue> => {
     if (spec.type === 'file') {

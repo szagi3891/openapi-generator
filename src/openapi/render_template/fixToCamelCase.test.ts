@@ -1,4 +1,4 @@
-import { expect } from "@std/expect";
+import { expect } from '../../lib.ts';
 import { fixToCamelCase } from './fixToCamelCase.ts';
 
 Deno.test('fixToCamelCase', () => {

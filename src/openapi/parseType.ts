@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from '../lib.ts';
 import { filterXProprty } from './filterXProprty.ts';
 import { JSONValue, OpenApiType } from './type.ts';
 import { getFromRef } from './isPrimitiveType.ts';
-import { assertNever } from '@reactive/utils';
+import { assertNever } from '../lib.ts';
 
 export const setRequired = (dataType: OpenApiType, required: boolean): OpenApiType => {
     switch (dataType.type) {

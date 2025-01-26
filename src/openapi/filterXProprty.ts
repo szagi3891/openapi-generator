@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '../lib.ts';
 
 const recordZod = z.record(z.string(), z.unknown());
 

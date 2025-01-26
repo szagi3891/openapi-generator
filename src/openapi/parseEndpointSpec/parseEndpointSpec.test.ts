@@ -1,5 +1,4 @@
-// import { describe, it, expect } from '@jest/globals';
-import { expect } from "@std/expect";
+import { expect } from '../../lib.ts';
 import { parseEndpointSpec } from './parseEndpointSpec.ts';
 
 Deno.test('base', () => {

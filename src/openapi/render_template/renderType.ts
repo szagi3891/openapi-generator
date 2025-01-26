@@ -1,6 +1,6 @@
 import { OpenApiType } from '../type.ts';
 import { getStructNameZod } from '../refName.ts';
-import { assertNever } from "@reactive/utils";
+import { assertNever } from "../../lib.ts";
 
 const addOptionalAndNullable = (require: boolean, nullable: boolean, typeParam: string): string => {
     const paramsArray = [typeParam];

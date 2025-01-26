@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '../../lib.ts';
 import { parseType, setRequired } from '../parseType.ts';
 import { OpenApiType, EndpointSpecType, JSONValue } from '../type.ts';
 import { convertParameters } from './convertParameters.ts';

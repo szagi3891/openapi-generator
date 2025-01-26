@@ -1,6 +1,6 @@
-import { jsonParse } from "@reactive/utils";
+import { jsonParse } from "../lib.ts";
 import fs from 'node:fs';
-import { z } from 'zod';
+import { z } from '../lib.ts';
 
 const SpecDetailsZod = z.record(z.string(), z.object({
     url: z.string(),
