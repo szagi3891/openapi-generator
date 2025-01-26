@@ -1,11 +1,12 @@
-import { jsonParse } from "../lib.ts";
+import { CheckByZod } from "../lib.ts";
 import fs from 'node:fs';
 import { z } from '../lib.ts';
 
 const SpecDetailsZod = z.record(z.string(), z.object({
     url: z.string(),
     method: z.string(),
-}));
+}))
+const SpecDetailsCheck = new CheckByZod('SpecDetailsCheck', SpecDetailsZod);
 
 export type SpecDetailsType = z.TypeOf<typeof SpecDetailsZod>;
 
@@ -18,10 +19,10 @@ export class TargetSpec {
         const specPath = `${this.target}/spec.json`;
 
         const specContent = (await fs.promises.readFile(specPath)).toString();
-        const spec = jsonParse(specContent, SpecDetailsZod);
+        const spec = SpecDetailsCheck.jsonParse(specContent);
 
         if (spec.type === 'ok') {
-            return spec.value;
+            return spec.data;
         } else {
             throw Error(`${specPath} => ${spec.error}`);
         }

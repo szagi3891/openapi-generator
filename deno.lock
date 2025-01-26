@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@reactive/utils@~0.5.160": "0.5.160",
+    "jsr:@reactive/utils@~0.5.184": "0.5.184",
     "jsr:@reactive/utils@~0.5.89": "0.5.160",
     "jsr:@std/assert@^1.0.7": "1.0.9",
     "jsr:@std/expect@^1.0.5": "1.0.7",
@@ -20,6 +21,18 @@
       "integrity": "7f70f9f5a9dcd138e3c07d3d4d5077be38d0920e8ff6b97043e0249b4a26dd71",
       "dependencies": [
         "jsr:@reactive/utils@~0.5.160",
+        "npm:@js-temporal/polyfill",
+        "npm:mobx",
+        "npm:superjson",
+        "npm:unws",
+        "npm:xml-js",
+        "npm:zod@*"
+      ]
+    },
+    "@reactive/utils@0.5.184": {
+      "integrity": "80ddeaf53744be5b193bc8233852fd2db84054d22415f87f75f5dc83ec97870b",
+      "dependencies": [
+        "jsr:@reactive/utils@~0.5.184",
         "npm:@js-temporal/polyfill",
         "npm:mobx",
         "npm:superjson",

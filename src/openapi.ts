@@ -6,7 +6,9 @@ import { renderEndpoint } from './openapi/render_template/renderEndpoint.ts';
 import { toBigCamelCase } from './openapi/render_template/toBigCamelCase.ts';
 import { renderModels } from './openapi/render_template/renderModels.ts';
 import type { TargetSpec } from "./openapi/TargetSpec.ts";
-import { assertNever, jsonParseRaw } from "./lib.ts";
+import { assertNever } from "./lib.ts";
+
+
 
 const getSpec = async (spec: SpecSourceType): Promise<JSONValue> => {
     if (spec.type === 'file') {
@@ -14,13 +16,13 @@ const getSpec = async (spec: SpecSourceType): Promise<JSONValue> => {
 
         const data = (await fs.promises.readFile(spec.path)).toString();
 
-        const jsonData = jsonParseRaw(data);
+        const jsonData = JSON.parse(data);
+        return jsonData;
+        // if (jsonData.type === 'ok') {
+        //     return jsonData.value;
+        // }
 
-        if (jsonData.type === 'ok') {
-            return jsonData.value;
-        }
-
-        throw Error('Parse problem');
+        // throw Error('Parse problem');
     }
 
     if (spec.type === 'remote') {
