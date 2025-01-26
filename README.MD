@@ -1,7 +1,10 @@
 ### generate js methods based on openapi specification
 
 ```sh
-deno run -A --reload https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts ./example/spec_openapi.json ./example/target
+deno run -A --reload \
+https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/main.ts \
+./example/spec_openapi.json \
+./example/target
 ```
 
 - ./example/spec_openapi.json - openapi specification
