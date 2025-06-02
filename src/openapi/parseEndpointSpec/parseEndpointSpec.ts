@@ -4,7 +4,7 @@ import { OpenApiType, EndpointSpecType, JSONValue } from '../type.ts';
 import { convertParameters } from './convertParameters.ts';
 
 const EndopointZod = z.object({
-    parameters: z.array(z.unknown()),
+    parameters: z.array(z.unknown()).optional(),
     requestBody: z.unknown(),
     responses: z.unknown(),
 });
@@ -66,7 +66,7 @@ export const parseEndpointSpec = (rawSpec: JSONValue, data: unknown): EndpointSp
         throw Error('parseError');
     }
 
-    const parameters = convertParameters(rawSpec, safeData.data.parameters);
+    const parameters = convertParameters(rawSpec, safeData.data.parameters ?? []);
 
     if (safeData.data.requestBody !== undefined) {
         const requestBody = convertRequestBody(rawSpec, safeData.data.requestBody);
