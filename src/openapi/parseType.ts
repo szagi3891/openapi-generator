@@ -90,6 +90,8 @@ const TypeStringConstZod = z.object({
     const: z.string(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
+    example: z.string().optional(), //ignore
+    format: z.string().optional(), //ignore
 }).strict();
 
 const TypeStringConstWithoutTypeZod = z.object({
