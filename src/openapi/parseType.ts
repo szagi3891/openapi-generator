@@ -105,6 +105,8 @@ const TypeStringEnumZod = z.object({
     enum: z.array(z.string()),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
+    example: z.string().optional(), //ignore
+    format: z.string().optional(), //ignore
 }).strict();
 
 const TypeStringZod = z.object({
@@ -112,6 +114,7 @@ const TypeStringZod = z.object({
     nullable: z.boolean().optional(),
     minLength: z.number().optional(), //ignore
     description: z.string().optional(), //ignore
+    example: z.string().optional(), //ignore
     format: z.string().optional(), //ignore
 }).strict();
 
