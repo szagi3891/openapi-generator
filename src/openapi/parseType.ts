@@ -134,6 +134,7 @@ const TypeNumberZod = z.object({
     format: z.string().optional(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
+    example: z.string().optional(), //ignore
 }).strict();
 
 const TypeBooleanZod = z.object({
