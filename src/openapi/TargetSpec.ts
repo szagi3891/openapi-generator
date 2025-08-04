@@ -6,7 +6,7 @@ const SpecDetailsZod = z.record(z.string(), z.object({
     url: z.string(),
     method: z.string(),
 }))
-const SpecDetailsCheck = new CheckByZod('SpecDetailsCheck', SpecDetailsZod);
+const SpecDetailsCheck = CheckByZod.create('SpecDetailsCheck', SpecDetailsZod);
 
 export type SpecDetailsType = z.TypeOf<typeof SpecDetailsZod>;
 
