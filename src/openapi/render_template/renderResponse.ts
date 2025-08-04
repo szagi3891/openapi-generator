@@ -12,7 +12,7 @@ export const renderResponse = (endpoint: EndpointSpecType, url: string, method: 
     out.push('        return decodeResult.data;');
     out.push(`    ${right}`);
     out.push('    console.error(\'error details\', {');
-    out.push('        errors: decodeResult.error.errors,');
+    out.push('        errors: decodeResult.error.issues,');
     out.push('        data');
     out.push('    });');
     out.push(`    throw Error(\`Response decoding error ${url} -> ${method} -> $${left}code${right}\`);`);

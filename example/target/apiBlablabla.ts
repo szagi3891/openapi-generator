@@ -16,7 +16,7 @@ const checkResponse = <A>(code: number, decoder: z.ZodType<A>, data: unknown): A
         return decodeResult.data;
     }
     console.error('error details', {
-        errors: decodeResult.error.errors,
+        errors: decodeResult.error.issues,
         data
     });
     throw Error(`Response decoding error /pets -> get -> ${code}`);
