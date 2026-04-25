@@ -107,6 +107,7 @@ const TypeStringEnumZod = z.object({
     description: z.string().optional(), //ignore
     example: z.string().optional(), //ignore
     format: z.string().optional(), //ignore
+    default: z.string().optional(), //ignore
 }).strict();
 
 const TypeStringZod = z.object({
@@ -128,6 +129,7 @@ const TypeIntegerZod = z.object({
     min: z.number().optional(), //ignore
     minimum: z.number().optional(), //ignore
     maximum: z.number().optional(), //ignore,
+    default: z.number().optional(), //ignore
 }).strict();
 
 const TypeNumberZod = z.object({
@@ -142,6 +144,7 @@ const TypeBooleanZod = z.object({
     type: z.literal('boolean'),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
+    default: z.boolean().optional(), //ignore
 }).strict();
 
 const TypeObjectNoValueZod = z.object({
