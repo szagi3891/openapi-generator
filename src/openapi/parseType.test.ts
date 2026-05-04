@@ -848,3 +848,33 @@ Deno.test('array can by empty', () => {
     });
 });
 
+Deno.test('OpenAPI 3.1 type array with null for primitives', () => {
+    expect(parseType(null, { type: ['string', 'null'] })).toEqual({
+        type: 'string',
+        required: true,
+        nullable: true,
+    });
+    expect(parseType(null, { type: ['null', 'integer'] })).toEqual({
+        type: 'number',
+        required: true,
+        nullable: true,
+    });
+    expect(parseType(null, { type: ['number', 'null'] })).toEqual({
+        type: 'number',
+        required: true,
+        nullable: true,
+    });
+    expect(parseType(null, { type: ['boolean', 'null'] })).toEqual({
+        type: 'boolean',
+        required: true,
+        nullable: true,
+    });
+});
+
+Deno.test('OpenAPI 3.1 type array only null', () => {
+    expect(parseType(null, { type: ['null'] })).toEqual({
+        type: 'null',
+        required: true,
+    });
+});
+

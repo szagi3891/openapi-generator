@@ -1,6 +1,6 @@
 import { z } from '../lib.ts';
 import { filterXProprty } from './filterXProprty.ts';
-import { JSONValue, OpenApiType } from './type.ts';
+import { JSONValue, JSONObject, OpenApiType, isJsonObject } from './type.ts';
 import { getFromRef } from './isPrimitiveType.ts';
 import { assertNever } from '../lib.ts';
 
@@ -136,6 +136,7 @@ const TypeIntegerZod = z.object({
 const TypeNumberZod = z.object({
     type: z.literal('number'),
     format: z.string().optional(),
+    nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
     example: z.number().optional(), //ignore
@@ -143,6 +144,7 @@ const TypeNumberZod = z.object({
 
 const TypeBooleanZod = z.object({
     type: z.literal('boolean'),
+    nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
     default: z.boolean().optional(), //ignore
@@ -213,8 +215,73 @@ const TypeOneofWithDiscriminatorZod = z.object({
     }).strict()
 }).strict();
 
+/** OpenAPI 3.1 / JSON Schema: `type` may be an array, e.g. `["string", "null"]`. */
+const normalizeJsonSchema31TypeKeyword = (data: unknown): unknown => {
+    const asJson = data as JSONValue;
+    if (!isJsonObject(asJson)) {
+        return data;
+    }
+
+    const typeField = asJson['type'];
+    if (!Array.isArray(typeField)) {
+        return data;
+    }
+
+    const typeStrings = typeField.filter((t): t is string => typeof t === 'string');
+    if (typeStrings.length !== typeField.length) {
+        return data;
+    }
+
+    const hasNull = typeStrings.includes('null');
+    const nonNull = [...new Set(typeStrings.filter((t) => t !== 'null'))];
+
+    const { type: _type, nullable: existingNullable, ...rest } = asJson;
+    const nullableMerged =
+        (typeof existingNullable === 'boolean' ? existingNullable : false) || hasNull;
+
+    if (nonNull.length === 0) {
+        return { ...rest, type: 'null' } satisfies JSONObject;
+    }
+
+    if (nonNull.length === 1) {
+        const single = nonNull[0];
+        if (single === undefined) {
+            return asJson;
+        }
+
+        const supportsNullableKeyword =
+            single === 'string' ||
+            single === 'number' ||
+            single === 'integer' ||
+            single === 'boolean' ||
+            single === 'array';
+
+        if (!supportsNullableKeyword) {
+            return asJson;
+        }
+
+        const out: JSONObject = { ...rest, type: single };
+        if (nullableMerged) {
+            out['nullable'] = true;
+        }
+        return out;
+    }
+
+    const oneOfBranches: Array<JSONObject> = nonNull.map((t) => ({
+        ...rest,
+        type: t,
+    }));
+
+    if (hasNull) {
+        oneOfBranches.push({ type: 'null' });
+    }
+
+    return { ...rest, oneOf: oneOfBranches } satisfies JSONObject;
+};
+
 export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
-    const data = filterXProprty(dataIn);
+    let data = filterXProprty(dataIn);
+    data = normalizeJsonSchema31TypeKeyword(data);
 
     {
         const safeData = TypeRefZod.safeParse(data);
@@ -300,7 +367,7 @@ export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
             return {
                 type: 'number',
                 required: true,
-                nullable: false
+                nullable: safeData.data.nullable ?? false
             };
         }
     }
@@ -321,7 +388,7 @@ export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
             return {
                 type: 'boolean',
                 required: true,
-                nullable: false
+                nullable: safeData.data.nullable ?? false
             };
         }
     }
