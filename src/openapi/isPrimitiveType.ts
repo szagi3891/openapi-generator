@@ -123,9 +123,10 @@ const derefSchemaInner = (json: JSONValue, base: JSONValue): JSONValue => {
             }
         */
 
-        const { xml: _xml, $ref: _$ref, ...restJson } = json;
+        const { xml: _xml, $ref: _$ref, description: _description, ...restJson } = json;
 
         if (Object.keys(restJson).length !== 0) {
+            console.info(JSON.stringify(restJson, null, 4));
             throw Error('Expectet one key');
         }
 

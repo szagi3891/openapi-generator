@@ -83,6 +83,7 @@ export const setRequired = (dataType: OpenApiType, required: boolean): OpenApiTy
 
 const TypeRefZod = z.object({
     $ref: z.string(),
+    description: z.string().optional(), //ignore
 }).strict();
 
 const TypeStringConstZod = z.object({
