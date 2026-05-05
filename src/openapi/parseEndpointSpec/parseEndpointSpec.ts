@@ -5,7 +5,7 @@ import { convertParameters } from './convertParameters.ts';
 
 const EndopointZod = z.object({
     parameters: z.array(z.unknown()).optional(),
-    requestBody: z.unknown(),
+    requestBody: z.unknown().optional(),
     responses: z.unknown(),
 });
 

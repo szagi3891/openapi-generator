@@ -155,3 +155,34 @@ Deno.test('base', () => {
     });
 });
 
+// Springdoc / Spring Boot: GET has no requestBody; 200 often uses wildcard media type ('*' + '/') and a $ref schema.
+Deno.test('GET without requestBody and wildcard response content (operationId me)', () => {
+    const data = {
+        tags: ['user-controller'],
+        operationId: 'me',
+        responses: {
+            '200': {
+                description: 'OK',
+                content: {
+                    '*/*': {
+                        schema: {
+                            $ref: '#/components/schemas/UserDto',
+                        },
+                    },
+                },
+            },
+        },
+    };
+
+    expect(parseEndpointSpec(null, data)).toEqual({
+        parameters: [],
+        responses: {
+            '200': {
+                type: 'ref',
+                path: '#/components/schemas/UserDto',
+                required: true,
+            },
+        },
+    });
+});
+
