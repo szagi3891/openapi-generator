@@ -11,23 +11,26 @@ const hasResponse = (handler: EndpointSpecType, code: string): boolean => {
 };
 
 export const renderResponseGeneric = (nameInFileCamelcaseBig: string, handler: EndpointSpecType): [string, string] => {
-    const left = '{';
-    const right = '}';
-
     const paramChunks: string[] = [];
     const ifChunks: string[] = [];
 
+    paramChunks.push(`
+    {
+        status: 0;
+        body: string;
+    }`);
+
     for (const [code, _] of Object.entries(handler.responses)) {
         paramChunks.push(`
-    ${left}
+    {
         status: ${code};
         body: Response${code}Type;
-    ${right}`);
+    }`);
 
         ifChunks.push(`
-    if (status === ${code}) ${left}
-        return ${left} status: ${code}, body: checkResponse(${code}, Response${code}ZOD, json) ${right};
-    ${right}`);
+    if (status === ${code}) {
+        return { status: ${code}, body: checkResponse(${code}, Response${code}ZOD, json) };
+    }`);
     }
 
     const genericResponseTypes = paramChunks.join(' | ');

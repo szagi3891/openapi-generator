@@ -45,53 +45,48 @@ function queryStringParams(parameters: EndpointSpecType['parameters']): string {
         return '\n    const query = \'\';';
     }
 
-    const left = '{';
-    const right = '}';
     const resultStr = result.join('\n');
     const resultFormatted = `\n${resultStr}`;
 
     return `
-    const query = ((): string => ${left}
+    const query = ((): string => {
         const query: string[] = [];
 
-        const addParam = (param: string, value: string | string[] | number | boolean | null | undefined): void => ${left}
-            if (typeof value === 'string') ${left}
-                query.push(\`\$${left}param${right}=\$${left}encodeURIComponent(value)${right}\`);
+        const addParam = (param: string, value: string | string[] | number | boolean | null | undefined): void => {
+            if (typeof value === 'string') {
+                query.push(\`\${param}=\${encodeURIComponent(value)}\`);
                 return;
-            ${right}
+            }
 
-            if (typeof value === 'number' || typeof value === 'boolean') ${left}
-                query.push(\`\$${left}param${right}=\$${left}value.toString()${right}\`);
+            if (typeof value === 'number' || typeof value === 'boolean') {
+                query.push(\`\${param}=\${value.toString()}\`);
                 return;
-            ${right}
+            }
 
-            if (Array.isArray(value)) ${left}
-                for (const v of value) ${left}
-                    query.push(\`\$${left}param${right}=\$${left}encodeURIComponent(v)${right}\`);
-                ${right}
+            if (Array.isArray(value)) {
+                for (const v of value) {
+                    query.push(\`\${param}=\${encodeURIComponent(v)}\`);
+                }
                 
                 return;
-            ${right}
-        ${right};
+            }
+        };
 
         ${resultFormatted}
 
-        return query.length > 0 ? \`?\$${left}query.join('&')${right}\` : '';
-    ${right})();`;
+        return query.length > 0 ? \`?\${query.join('&')}\` : '';
+    })();`;
 }
 
 function generateUrlItem(urlChunk: string): string {
-    const left = '{';
-    const right = '}';
-
     const chars = urlChunk.split('');
     const first = chars[0];
     const last = chars[chars.length - 1];
 
-    if (first === left && last === right) {
+    if (first === '{' && last === '}') {
         const inner = chars.slice(1, -1).join('');
         const innerCamelCase = fixToCamelCase(inner);
-        return `$${left}params.${innerCamelCase}${right}`;
+        return `\${params.${innerCamelCase}}`;
     }
 
     return urlChunk;
@@ -103,14 +98,11 @@ function generateUrl(url: string): string {
 
 
 export function generateUrlAll(url: string, handler: EndpointSpecType): string {
-    const left = '{';
-    const right = '}';
-
     const queryStringParams0 = queryStringParams(handler.parameters);
     const generateUrl0 = generateUrl(url);
 
     return `
         ${queryStringParams0}
-    const url = \`$${left}api_url${right}${generateUrl0}$${left}query${right}\`;
+    const url = \`\${api_url}${generateUrl0}\${query}\`;
     `;
 }

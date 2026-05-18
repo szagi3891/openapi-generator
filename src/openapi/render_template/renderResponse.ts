@@ -2,21 +2,19 @@ import { EndpointSpecType } from '../type.ts';
 import { renderType } from './renderType.ts';
 
 export const renderResponse = (endpoint: EndpointSpecType, url: string, method: string): string => {
-    const left = '{';
-    const right = '}';
     const out: string[] = [];
 
-    out.push(`const checkResponse = <A>(code: number, decoder: z.ZodType<A>, data: unknown): A => ${left}`);
+    out.push(`const checkResponse = <A>(code: number, decoder: z.ZodType<A>, data: unknown): A => {`);
     out.push('    const decodeResult = decoder.safeParse(data);');
-    out.push(`    if (decodeResult.success) ${left}`);
+    out.push(`    if (decodeResult.success) {`);
     out.push('        return decodeResult.data;');
-    out.push(`    ${right}`);
+    out.push(`    }`);
     out.push('    console.error(\'error details\', {');
     out.push('        errors: decodeResult.error.issues,');
     out.push('        data');
     out.push('    });');
-    out.push(`    throw Error(\`Response decoding error ${url} -> ${method} -> $${left}code${right}\`);`);
-    out.push(`${right};`);
+    out.push(`    throw Error(\`Response decoding error ${url} -> ${method} -> \${code}\`);`);
+    out.push(`};`);
     out.push('');
     out.push('');
 

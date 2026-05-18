@@ -19,9 +19,6 @@ const getBody = (spec: EndpointSpecType): string => {
 };
 
 const generateHeadersType = (parameters: EndpointSpecType['parameters']): string => {
-    const left = '{';
-    const right = '}';
-
     const headers: string[] = [];
 
     const typeParam = 'type ExtraHeadersType = z.TypeOf<typeof ExtraHeadersZod>;';
@@ -40,7 +37,7 @@ const generateHeadersType = (parameters: EndpointSpecType['parameters']): string
 
     if (headers.length > 0) {
         const headersJoin = headers.join('\n');
-        return `const ExtraHeadersZod = z.object(${left}\n${headersJoin}\n${right});\n${typeParam}\n`;
+        return `const ExtraHeadersZod = z.object({\n${headersJoin}\n});\n${typeParam}\n`;
     }
 
     return `const ExtraHeadersZod = z.record(z.string(), z.string());\n${typeParam}\n`;
@@ -64,9 +61,6 @@ const generateHeadersParam = (parameters: EndpointSpecType['parameters']): strin
 };
 
 export const renderEndpoint = (openApiSpec: JSONValue, nameInFile: string, method: string, url: string, handler: EndpointSpecType): string => {
-    const left = '{';
-    const right = '}';
-
     const imports = renderImports(openApiSpec, handler);
     const generateParamsDef = renderParamsTypeZod(handler);
     const generateResponseIoData = renderResponse(handler, url, method);
@@ -100,58 +94,69 @@ export type ${nameInFileCamelcaseBig}ParamsType = ParamsType;
 
 ${genericResponseTypes}
 
-const convertHeaders = (params: Record<string, string | null | undefined>): Record<string, string> => ${left}
-    const result: Record<string, string> = ${left}${right};
+const convertHeaders = (params: Record<string, string | null | undefined>): Record<string, string> => {
+    const result: Record<string, string> = {};
 
-    for (const [name, value] of Object.entries(params)) ${left}
-        if (value !== null && value !== undefined) ${left}
+    for (const [name, value] of Object.entries(params)) {
+        if (value !== null && value !== undefined) {
             result[name] = value;
-        ${right}
-    ${right}
+        }
+    }
 
     return result;
-${right};
+};
 
 export const ${nameInFileCamelcaseSmall}Request = async (
     api_url: string,
     params: ParamsType,
     ${extra_headers}
-): Promise<${nameInFileCamelcaseBig}ResponseType> => ${left}
+): Promise<${nameInFileCamelcaseBig}ResponseType> => {
     const ok = ParamsTypeZOD.safeParse(params);
-    if (!ok.success) ${left}
+    if (!ok.success) {
         console.error('Input parameters do not match the definition from openapi');
-    ${right}
+    }
 
     ${urlCode}
 
-    const headers = convertHeaders(${left}
+    const headers = convertHeaders({
         'Content-Type': 'application/json; charset=utf-8',
         ...extraHeaders
-    ${right});
+    });
 
-    const response = await fetch(url, ${left}
-        method: '${generateMethod.toUpperCase()}',
-        headers,
-        body: JSON.stringify(${generateBody}),
-        credentials: 'include'
-    ${right});
+    let response: Response | null = null;
+    try {
+        response = await fetch(url, {
+            method: '${generateMethod.toUpperCase()}',
+            headers,
+            body: JSON.stringify(${generateBody}),
+            credentials: 'include'
+        });
+    } catch (error) {
+        return {
+            status: 0,
+            body: \`${generateMethod.toUpperCase()}:\${url} \${error instanceof Error ? error.message : String(error)}\`
+        };
+    }
 
     const status = response.status;
 
     let json = null;
 
-    try ${left}
+    try {
         const text = await response.text();
-        if (text !== '') ${left}
+        if (text !== '') {
             json = JSON.parse(text);
-        ${right}
-    ${right} catch (_err) ${left}
-        throw Error(\`Http status $${left}status${right} - json was expected\`);
-    ${right}
+        }
+    } catch (_err) {
+        return {
+            status: 0,
+            body: \`${generateMethod.toUpperCase()}:\${url} -> Http status \${status} - json was expected\`
+        };
+    }
     ${genericResponseIfs}
 
-    throw new Error(\`${nameInFileCamelcaseSmall}Request - unhandled response $${left}status${right}\`);
-${right};
+    throw new Error(\`${nameInFileCamelcaseSmall}Request - unhandled response \${status}\`);
+};
 `;
 
     return content;
