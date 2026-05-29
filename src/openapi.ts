@@ -1,4 +1,5 @@
 import { SpecSourceType, JSONValue, EndpointSpecType } from './openapi/type.ts';
+import { parseContent } from './openapi/parseSpecContent.ts';
 import fs from 'node:fs';
 import { derefSchema, getFromObjectByPath } from './openapi/isPrimitiveType.ts';
 import { parseEndpointSpec } from './openapi/parseEndpointSpec/parseEndpointSpec.ts';
@@ -16,8 +17,7 @@ const getSpec = async (spec: SpecSourceType): Promise<JSONValue> => {
 
         const data = (await fs.promises.readFile(spec.path)).toString();
 
-        const jsonData = JSON.parse(data);
-        return jsonData;
+        return parseContent(spec.path, data);
         // if (jsonData.type === 'ok') {
         //     return jsonData.value;
         // }
@@ -29,9 +29,8 @@ const getSpec = async (spec: SpecSourceType): Promise<JSONValue> => {
         const response = await fetch(spec.json);
 
         if (response.status === 200) {
-            const json = await response.json();
-            return json;
-
+            const content = await response.text();
+            return parseContent(spec.json, content);
         }
         throw Error(`Parse fetch problem ${spec.json}`);
     }

@@ -11,6 +11,7 @@
     "npm:@types/react@*": "19.2.14",
     "npm:mobx@*": "6.15.1",
     "npm:react@*": "19.2.5",
+    "npm:yaml@2": "2.9.0",
     "npm:zod@4": "4.4.3"
   },
   "jsr": {
@@ -63,6 +64,10 @@
     },
     "react@19.2.5": {
       "integrity": "sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA=="
+    },
+    "yaml@2.9.0": {
+      "integrity": "sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==",
+      "bin": true
     },
     "zod@4.4.3": {
       "integrity": "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="
