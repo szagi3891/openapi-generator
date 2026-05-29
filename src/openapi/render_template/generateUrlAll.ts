@@ -20,6 +20,7 @@ function queryStringParamsOne(
         case 'boolean':
         case 'union':
         case 'array':
+        case 'ref':
             result.push(`        addParam('${nameKey}', ${nameProp});`);
             break;
         default:
