@@ -878,3 +878,32 @@ Deno.test('OpenAPI 3.1 type array only null', () => {
     });
 });
 
+Deno.test('oneOf with ref and null', () => {
+    expect(parseType(null, {
+        description: 'Active Stripe PaymentIntent for the cart. Present only while the checkout is at the PAYMENT step; null otherwise. Recomputed when the cart total changes so the client always confirms the current amount.',
+        oneOf: [
+            {
+                '$ref': '#/components/schemas/PaymentIntentResponse',
+            },
+            {
+                type: 'null',
+            },
+        ],
+    })).toEqual({
+        type: 'union',
+        required: true,
+        nullable: false,
+        list: [
+            {
+                type: 'ref',
+                path: '#/components/schemas/PaymentIntentResponse',
+                required: true,
+            },
+            {
+                type: 'null',
+                required: true,
+            },
+        ],
+    });
+});
+

@@ -186,7 +186,9 @@ const TypeArrayZod = z.object({
 }).strict();
 
 const TypeOneOfZod = z.object({
-    oneOf: z.array(z.unknown())
+    oneOf: z.array(z.unknown()),
+    description: z.string().optional(), //ignore
+    title: z.string().optional(), //ignore
 }).strict();
 
 

@@ -1,8 +1,4 @@
 {
-  "tasks": {
-    "dev": "deno run --watch main.ts",
-    "full-test": "deno check ./main.ts && deno test --allow-all"
-  },
   "compilerOptions": {
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true
