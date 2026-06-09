@@ -28,6 +28,19 @@ const isFirstLetter = (param: string): boolean => {
     return (firstCharCode >= 65 && firstCharCode <= 90) || (firstCharCode >= 97 && firstCharCode <= 122);
 };
   
+const getStringLiteralEnumValues = (list: Array<OpenApiType>): Array<string> | null => {
+    const values: Array<string> = [];
+
+    for (const item of list) {
+        if (item.type !== 'literal') {
+            return null;
+        }
+        values.push(item.const);
+    }
+
+    return values;
+};
+
 const generateObjectPropName = (key: string): string => {
     const first = key[0];
 
@@ -76,6 +89,12 @@ export const renderType = (ident: number, data: OpenApiType): string => {
             return addOptionalAndNullable(data.required, data.nullable,`z.tuple([${result.join(', ')}])`);
         }
         case 'union': {
+            const stringLiteralEnumValues = getStringLiteralEnumValues(data.list);
+            if (stringLiteralEnumValues !== null) {
+                const enumValues = stringLiteralEnumValues.map((value) => `'${value}'`).join(', ');
+                return addOptionalAndNullable(data.required, data.nullable, `z.enum([${enumValues}])`);
+            }
+
             const result = [];
             for (const listItem of data.list) {
                 result.push(renderType(ident, listItem));
