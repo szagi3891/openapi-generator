@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  dev:
+    desc: Run the generator with file watch
+    cmds:
+      - deno run --watch main.ts
+
+  full-test:
+    desc: Typecheck and run all tests
+    cmds:
+      - deno check ./main.ts
+      - deno test --allow-all

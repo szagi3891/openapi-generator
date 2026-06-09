@@ -774,6 +774,29 @@ Deno.test('enum', () => {
         required: true,
         nullable: false,
     });
+
+    expect(parseType(null, {
+        enum: [
+            'DELIVERY',
+            'BILLING',
+            'PAYMENT',
+            'PAID',
+            'FINALIZE',
+        ],
+        type: 'string',
+        nullable: true,
+    })).toEqual({
+        type: 'union',
+        required: true,
+        nullable: true,
+        list: [
+            { type: 'literal', required: true, nullable: false, const: 'DELIVERY' },
+            { type: 'literal', required: true, nullable: false, const: 'BILLING' },
+            { type: 'literal', required: true, nullable: false, const: 'PAYMENT' },
+            { type: 'literal', required: true, nullable: false, const: 'PAID' },
+            { type: 'literal', required: true, nullable: false, const: 'FINALIZE' },
+        ],
+    });
 });
 
 Deno.test('null', () => {

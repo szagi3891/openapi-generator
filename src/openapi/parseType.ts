@@ -104,6 +104,7 @@ const TypeStringConstWithoutTypeZod = z.object({
 const TypeStringEnumZod = z.object({
     type: z.literal('string'),
     enum: z.array(z.string()),
+    nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
     example: z.string().optional(), //ignore
@@ -333,7 +334,7 @@ export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
                 return {
                     type: 'literal',
                     required: true,
-                    nullable: false,
+                    nullable: safeData.data.nullable ?? false,
                     const: first,
                 };
             }
@@ -341,7 +342,7 @@ export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
             return {
                 type: 'union',
                 required: true,
-                nullable: false,
+                nullable: safeData.data.nullable ?? false,
                 list: safeData.data.enum.map((enumItem) => ({
                     type: 'literal',
                     required: true,
