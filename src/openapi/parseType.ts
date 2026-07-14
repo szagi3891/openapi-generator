@@ -192,6 +192,12 @@ const TypeOneOfZod = z.object({
     title: z.string().optional(), //ignore
 }).strict();
 
+const TypeAllOfZod = z.object({
+    allOf: z.array(z.unknown()),
+    description: z.string().optional(), //ignore
+    title: z.string().optional(), //ignore
+}).strict();
+
 
 const TypePatternPropertiesZod = z.object({
     patternProperties: z.object({
@@ -280,6 +286,39 @@ const normalizeJsonSchema31TypeKeyword = (data: unknown): unknown => {
     }
 
     return { ...rest, oneOf: oneOfBranches } satisfies JSONObject;
+};
+
+const resolveAllOfBranch = (rawSpec: JSONValue, item: unknown): OpenApiType => {
+    const parsed = parseType(rawSpec, item);
+
+    if (parsed.type === 'ref' && rawSpec !== null) {
+        return parseType(rawSpec, getFromRef(rawSpec, parsed.path));
+    }
+
+    return parsed;
+};
+
+const mergeAllOfObjects = (types: Array<OpenApiType>): OpenApiType => {
+    const props: Record<string, OpenApiType> = {};
+
+    for (const type of types) {
+        if (type.type !== 'object') {
+            throw Error('allOf merge expects object branches');
+        }
+
+        Object.assign(props, type.props);
+    }
+
+    if (Object.keys(props).length === 0) {
+        throw Error('At least one variant was expected in allOf');
+    }
+
+    return {
+        type: 'object',
+        required: true,
+        nullable: false,
+        props,
+    };
 };
 
 export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
@@ -478,6 +517,24 @@ export const parseType = (rawSpec: JSONValue, dataIn: unknown): OpenApiType => {
                 nullable: false,
                 list: safeData.data.oneOf.map(item => parseType(rawSpec, item)),
             };
+        }
+    }
+
+    {
+        const safeData = TypeAllOfZod.safeParse(data);
+        if (safeData.success) {
+            const [ first, ...rest ] = safeData.data.allOf;
+
+            if (rest.length === 0) {
+                if (first === undefined) {
+                    throw Error('At least one variant was expected in allOf');
+                }
+
+                return resolveAllOfBranch(rawSpec, first);
+            }
+
+            const resolved = safeData.data.allOf.map((item) => resolveAllOfBranch(rawSpec, item));
+            return mergeAllOfObjects(resolved);
         }
     }
 

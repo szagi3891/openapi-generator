@@ -930,3 +930,69 @@ Deno.test('oneOf with ref and null', () => {
     });
 });
 
+Deno.test('allOf with ref and object', () => {
+    const rawSpec = {
+        components: {
+            schemas: {
+                InboundShipmentBase: {
+                    type: 'object',
+                    required: [
+                        'id',
+                    ],
+                    properties: {
+                        id: {
+                            type: 'string',
+                        },
+                        status: {
+                            type: 'string',
+                            enum: [
+                                'AWAITING_DELIVERY',
+                                'DELIVERED',
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+    };
+
+    expect(parseType(rawSpec, {
+        allOf: [
+            {
+                '$ref': '#/components/schemas/InboundShipmentBase',
+            },
+            {
+                type: 'object',
+                required: [
+                    'status',
+                ],
+                properties: {
+                    status: {
+                        type: 'string',
+                        enum: [
+                            'AWAITING_DELIVERY',
+                        ],
+                    },
+                },
+            },
+        ],
+    })).toEqual({
+        type: 'object',
+        required: true,
+        nullable: false,
+        props: {
+            id: {
+                type: 'string',
+                required: true,
+                nullable: false,
+            },
+            status: {
+                type: 'literal',
+                const: 'AWAITING_DELIVERY',
+                required: true,
+                nullable: false,
+            },
+        },
+    });
+});
+
