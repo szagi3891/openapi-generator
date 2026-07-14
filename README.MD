@@ -14,10 +14,17 @@ https://raw.githubusercontent.com/szagi3891/openapi-generator/refs/heads/main/ma
 
 ```json
 {
-    "blablabla": {
-        "method": "get",
-        "url": "/pets"
+    "credentials": "omit",
+    "endpoints": {
+        "blablabla": {
+            "method": "get",
+            "url": "/pets"
+        }
     }
 }
+```
+
+- `credentials` — opcjonalne, domyślnie `"omit"`. Dozwolone wartości: `"omit"`, `"same-origin"`, `"include"` (przekazywane do `fetch(..., { credentials })`).
+- `endpoints` — mapa endpointów do wygenerowania.
 
 ```

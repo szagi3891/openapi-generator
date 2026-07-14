@@ -1,6 +1,9 @@
 {
-    "blablabla": {
-        "method": "get",
-        "url": "/pets"
+    "credentials": "include",
+    "endpoints": {
+        "blablabla": {
+            "method": "get",
+            "url": "/pets"
+        }
     }
 }

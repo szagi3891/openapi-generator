@@ -52,12 +52,14 @@ export const taskGenerateOpenapi = async (
 
     const endpointDefList: Array<EndpointSpecType> = [];
 
-    for (const [methodAlias, def] of Object.entries(await requestedApiSpec.getTargetSpec())) {
+    const targetSpec = await requestedApiSpec.getTargetSpec();
+
+    for (const [methodAlias, def] of Object.entries(targetSpec.endpoints)) {
         const endpoint = parseEndpointSpec(openApiSpec, getFromObjectByPath(openApiSpec, ['paths', def.url, def.method]));
         endpointDefList.push(endpoint);
         const fileName = `api${toBigCamelCase(methodAlias)}`;
         
-        const template = renderEndpoint(openApiSpec, fileName, def.method, def.url, endpoint);
+        const template = renderEndpoint(openApiSpec, fileName, def.method, def.url, endpoint, targetSpec.credentials);
         
         const outFile = await requestedApiSpec.writeTemplate(fileName, template);
         console.info(`%cgenerated -> ${outFile}`, 'color: green;');

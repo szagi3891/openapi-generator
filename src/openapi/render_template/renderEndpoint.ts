@@ -1,4 +1,5 @@
 import { EndpointSpecType, JSONValue } from '../type.ts';
+import type { CredentialsType } from '../TargetSpec.ts';
 import { renderParamsTypeZod } from './renderParams.ts';
 import { renderResponse } from './renderResponse.ts';
 import { renderType } from './renderType.ts';
@@ -60,7 +61,14 @@ const generateHeadersParam = (parameters: EndpointSpecType['parameters']): strin
     return 'extraHeaders?: ExtraHeadersType';
 };
 
-export const renderEndpoint = (openApiSpec: JSONValue, nameInFile: string, method: string, url: string, handler: EndpointSpecType): string => {
+export const renderEndpoint = (
+    openApiSpec: JSONValue,
+    nameInFile: string,
+    method: string,
+    url: string,
+    handler: EndpointSpecType,
+    credentials: CredentialsType,
+): string => {
     const imports = renderImports(openApiSpec, handler);
     const generateParamsDef = renderParamsTypeZod(handler);
     const generateResponseIoData = renderResponse(handler, url, method);
@@ -129,7 +137,7 @@ export const ${nameInFileCamelcaseSmall}Request = async (
             method: '${generateMethod.toUpperCase()}',
             headers,
             body: JSON.stringify(${generateBody}),
-            credentials: 'include'
+            credentials: '${credentials}'
         });
     } catch (error) {
         return {
