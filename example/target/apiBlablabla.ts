@@ -37,6 +37,10 @@ export type ApiBlablablaParamsType = ParamsType;
 
 export type ApiBlablablaResponseType = 
     {
+        status: 0;
+        body: string;
+    } | 
+    {
         status: 200;
         body: Response200Type;
     };
@@ -68,32 +72,28 @@ export const apiBlablablaRequest = async (
     
         
     const query = ((): string => {
-        const query: string[] = [];
+        const searchParams = new URLSearchParams();
 
         const addParam = (param: string, value: string | string[] | number | boolean | null | undefined): void => {
-            if (typeof value === 'string') {
-                query.push(`${param}=${encodeURIComponent(value)}`);
-                return;
-            }
-
-            if (typeof value === 'number' || typeof value === 'boolean') {
-                query.push(`${param}=${value.toString()}`);
+            if (value === null || value === undefined) {
                 return;
             }
 
             if (Array.isArray(value)) {
                 for (const v of value) {
-                    query.push(`${param}=${encodeURIComponent(v)}`);
+                    searchParams.append(param, v);
                 }
-                
                 return;
             }
+
+            searchParams.set(param, String(value));
         };
 
         
         addParam('limit', params?.limit);
 
-        return query.length > 0 ? `?${query.join('&')}` : '';
+        const q = searchParams.toString();
+        return q.length > 0 ? `?${q}` : '';
     })();
     const url = `${api_url}/pets${query}`;
     
@@ -103,12 +103,20 @@ export const apiBlablablaRequest = async (
         ...extraHeaders
     });
 
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-        body: JSON.stringify(undefined),
-        credentials: 'include'
-    });
+    let response: Response | null = null;
+    try {
+        response = await fetch(url, {
+            method: 'GET',
+            headers,
+            body: JSON.stringify(undefined),
+            credentials: 'include'
+        });
+    } catch (error) {
+        return {
+            status: 0,
+            body: `GET:${url} ${error instanceof Error ? error.message : String(error)}`
+        };
+    }
 
     const status = response.status;
 
@@ -120,7 +128,10 @@ export const apiBlablablaRequest = async (
             json = JSON.parse(text);
         }
     } catch (_err) {
-        throw Error(`Http status ${status} - json was expected`);
+        return {
+            status: 0,
+            body: `GET:${url} -> Http status ${status} - json was expected`
+        };
     }
     
     if (status === 200) {

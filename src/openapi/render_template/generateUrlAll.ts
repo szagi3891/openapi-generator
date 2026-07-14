@@ -51,31 +51,27 @@ function queryStringParams(parameters: EndpointSpecType['parameters']): string {
 
     return `
     const query = ((): string => {
-        const query: string[] = [];
+        const searchParams = new URLSearchParams();
 
         const addParam = (param: string, value: string | string[] | number | boolean | null | undefined): void => {
-            if (typeof value === 'string') {
-                query.push(\`\${param}=\${encodeURIComponent(value)}\`);
-                return;
-            }
-
-            if (typeof value === 'number' || typeof value === 'boolean') {
-                query.push(\`\${param}=\${value.toString()}\`);
+            if (value === null || value === undefined) {
                 return;
             }
 
             if (Array.isArray(value)) {
                 for (const v of value) {
-                    query.push(\`\${param}=\${encodeURIComponent(v)}\`);
+                    searchParams.append(param, v);
                 }
-                
                 return;
             }
+
+            searchParams.set(param, String(value));
         };
 
         ${resultFormatted}
 
-        return query.length > 0 ? \`?\${query.join('&')}\` : '';
+        const q = searchParams.toString();
+        return q.length > 0 ? \`?\${q}\` : '';
     })();`;
 }
 
