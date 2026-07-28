@@ -871,6 +871,21 @@ Deno.test('array can by empty', () => {
     });
 });
 
+Deno.test('string with format uri and examples', () => {
+    expect(parseType(null, {
+        type: 'string',
+        format: 'uri',
+        description: 'Stable problem type URI identifying the error class.',
+        examples: [
+            'https://api.magellanerp.com/problems/validation-failed',
+        ],
+    })).toEqual({
+        type: 'string',
+        required: true,
+        nullable: false,
+    });
+});
+
 Deno.test('OpenAPI 3.1 type array with null for primitives', () => {
     expect(parseType(null, { type: ['string', 'null'] })).toEqual({
         type: 'string',

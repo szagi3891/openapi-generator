@@ -118,6 +118,7 @@ const TypeStringZod = z.object({
     minLength: z.number().optional(), //ignore
     description: z.string().optional(), //ignore
     example: z.string().optional(), //ignore
+    examples: z.array(z.string()).optional(), //ignore
     format: z.string().optional(), //ignore
     maxLength: z.number().optional(), //ignore
 }).strict();
