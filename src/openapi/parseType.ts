@@ -169,6 +169,7 @@ const TypeObjectAdditionalPropertiesZod = z.object({
     additionalProperties: z.unknown(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
+    example: z.unknown().optional(), //ignore
 }).strict();
 
 const TypeTupleZod = z.object({

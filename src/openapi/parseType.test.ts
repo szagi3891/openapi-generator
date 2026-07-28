@@ -886,6 +886,30 @@ Deno.test('string with format uri and examples', () => {
     });
 });
 
+Deno.test('object with additionalProperties and example', () => {
+    expect(parseType(null, {
+        type: 'object',
+        description: 'Delivery counts keyed by status. Statuses with zero deliveries are omitted.',
+        additionalProperties: {
+            type: 'integer',
+            minimum: 0,
+        },
+        example: {
+            AWAITING_DELIVERY: 3,
+            IN_RECEIVING: 1,
+        },
+    })).toEqual({
+        type: 'record',
+        required: true,
+        nullable: false,
+        item: {
+            type: 'number',
+            required: true,
+            nullable: false,
+        },
+    });
+});
+
 Deno.test('OpenAPI 3.1 type array with null for primitives', () => {
     expect(parseType(null, { type: ['string', 'null'] })).toEqual({
         type: 'string',
