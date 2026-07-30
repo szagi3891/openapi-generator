@@ -76,17 +76,11 @@ function queryStringParams(parameters: EndpointSpecType['parameters']): string {
 }
 
 function generateUrlItem(urlChunk: string): string {
-    const chars = urlChunk.split('');
-    const first = chars[0];
-    const last = chars[chars.length - 1];
-
-    if (first === '{' && last === '}') {
-        const inner = chars.slice(1, -1).join('');
+    // Also covers embedded params e.g. `{ean}:resolve` (not only whole-segment `{ean}`).
+    return urlChunk.replaceAll(/\{([^}]+)\}/g, (_match, inner: string) => {
         const innerCamelCase = fixToCamelCase(inner);
         return `\${params.${innerCamelCase}}`;
-    }
-
-    return urlChunk;
+    });
 }
 
 function generateUrl(url: string): string {
