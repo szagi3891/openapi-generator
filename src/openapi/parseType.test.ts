@@ -1035,3 +1035,22 @@ Deno.test('allOf with ref and object', () => {
     });
 });
 
+Deno.test('array with minItems and items $ref', () => {
+    expect(parseType(null, {
+        type: 'array',
+        minItems: 1,
+        items: {
+            $ref: '#/components/schemas/ReturnItemRequest',
+        },
+    })).toEqual({
+        type: 'array',
+        required: true,
+        nullable: false,
+        items: {
+            type: 'ref',
+            path: '#/components/schemas/ReturnItemRequest',
+            required: true,
+        },
+    });
+});
+

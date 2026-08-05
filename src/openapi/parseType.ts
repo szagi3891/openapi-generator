@@ -182,6 +182,7 @@ const TypeTupleZod = z.object({
 const TypeArrayZod = z.object({
     type: z.literal('array'),
     items: z.unknown(),
+    minItems: z.number().optional(), //ignore
     maxItems: z.number().optional(), //ignore
     nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
