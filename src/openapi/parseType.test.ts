@@ -1035,6 +1035,112 @@ Deno.test('allOf with ref and object', () => {
     });
 });
 
+Deno.test('oneOf with discriminator mapping', () => {
+    const rawSpec = {
+        components: {
+            schemas: {
+                NewSupplierUnit: {
+                    type: 'object',
+                    required: [
+                        'status',
+                        'unitId',
+                    ],
+                    properties: {
+                        status: {
+                            type: 'string',
+                            enum: [
+                                'new',
+                            ],
+                        },
+                        unitId: {
+                            type: 'string',
+                        },
+                    },
+                },
+                ExistingSupplierUnit: {
+                    type: 'object',
+                    required: [
+                        'status',
+                        'unitId',
+                    ],
+                    properties: {
+                        status: {
+                            type: 'string',
+                            enum: [
+                                'existing',
+                            ],
+                        },
+                        unitId: {
+                            type: 'string',
+                        },
+                    },
+                },
+            },
+        },
+    };
+
+    expect(parseType(rawSpec, {
+        description: 'The outcome of processing one scanned supplier unit barcode. `new` is a unit this call\nregistered; `existing` is a unit an earlier call registered and this call resumed. Both carry\nthe `unitId` the receiving flow uses from here on; the status is what a scanning client keys\nits next screen off.\n',
+        oneOf: [
+            {
+                $ref: '#/components/schemas/NewSupplierUnit',
+            },
+            {
+                $ref: '#/components/schemas/ExistingSupplierUnit',
+            },
+        ],
+        discriminator: {
+            propertyName: 'status',
+            mapping: {
+                new: '#/components/schemas/NewSupplierUnit',
+                existing: '#/components/schemas/ExistingSupplierUnit',
+            },
+        },
+    })).toEqual({
+        type: 'union',
+        required: true,
+        nullable: false,
+        list: [
+            {
+                type: 'object',
+                required: true,
+                nullable: false,
+                props: {
+                    status: {
+                        type: 'literal',
+                        const: 'new',
+                        required: true,
+                        nullable: false,
+                    },
+                    unitId: {
+                        type: 'string',
+                        required: true,
+                        nullable: false,
+                    },
+                },
+            },
+            {
+                type: 'object',
+                required: true,
+                nullable: false,
+                props: {
+                    status: {
+                        type: 'literal',
+                        const: 'existing',
+                        required: true,
+                        nullable: false,
+                    },
+                    unitId: {
+                        type: 'string',
+                        required: true,
+                        nullable: false,
+                    },
+                },
+            },
+        ],
+    });
+});
+
 Deno.test('array with minItems and items $ref', () => {
     expect(parseType(null, {
         type: 'array',

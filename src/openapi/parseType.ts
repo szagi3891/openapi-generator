@@ -224,7 +224,9 @@ const TypeOneofWithDiscriminatorZod = z.object({
     discriminator: z.object({
         propertyName: z.string(),
         mapping: z.record(z.string(), z.string())
-    }).strict()
+    }).strict(),
+    description: z.string().optional(), //ignore
+    title: z.string().optional(), //ignore
 }).strict();
 
 /** OpenAPI 3.1 / JSON Schema: `type` may be an array, e.g. `["string", "null"]`. */
