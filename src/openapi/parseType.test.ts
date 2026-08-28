@@ -886,6 +886,47 @@ Deno.test('string with format uri and examples', () => {
     });
 });
 
+Deno.test('object with additionalProperties false', () => {
+    expect(parseType(null, {
+        type: 'object',
+        additionalProperties: false,
+        description: 'This call registered the barcode. The unit holds no items and is not yet associated with a\ndelivery.\n',
+        required: [
+            'status',
+            'unitId',
+        ],
+        properties: {
+            status: {
+                type: 'string',
+                enum: [
+                    'new',
+                ],
+            },
+            unitId: {
+                type: 'string',
+                format: 'uuid',
+            },
+        },
+    })).toEqual({
+        type: 'object',
+        required: true,
+        nullable: false,
+        props: {
+            status: {
+                type: 'literal',
+                const: 'new',
+                required: true,
+                nullable: false,
+            },
+            unitId: {
+                type: 'string',
+                required: true,
+                nullable: false,
+            },
+        },
+    });
+});
+
 Deno.test('object with additionalProperties and example', () => {
     expect(parseType(null, {
         type: 'object',

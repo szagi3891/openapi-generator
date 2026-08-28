@@ -160,6 +160,7 @@ const TypeObjectZod = z.object({
     type: z.literal('object'),
     required: z.array(z.string()).optional(),
     properties: z.record(z.string(), z.unknown()),
+    additionalProperties: z.literal(false).optional(), //ignore
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
 }).strict();
