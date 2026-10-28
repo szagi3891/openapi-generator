@@ -1214,3 +1214,14 @@ Deno.test('string with pattern', () => {
         nullable: false,
     });
 });
+
+Deno.test('number with minimum', () => {
+    expect(parseType(null, {
+        type: 'number',
+        minimum: 0,
+    })).toEqual({
+        type: 'number',
+        required: true,
+        nullable: false,
+    });
+});
