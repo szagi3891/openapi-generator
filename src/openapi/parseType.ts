@@ -121,6 +121,7 @@ const TypeStringZod = z.object({
     examples: z.array(z.string()).optional(), //ignore
     format: z.string().optional(), //ignore
     maxLength: z.number().optional(), //ignore
+    pattern: z.string().optional(), //ignore
 }).strict();
 
 const TypeIntegerZod = z.object({

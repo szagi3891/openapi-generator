@@ -1201,3 +1201,16 @@ Deno.test('array with minItems and items $ref', () => {
     });
 });
 
+
+Deno.test('string with pattern', () => {
+    expect(parseType(null, {
+        type: 'string',
+        minLength: 1,
+        maxLength: 255,
+        pattern: "^\\s*(?=.*[A-Za-zÀ-ÿĀ-ž])[A-Za-zÀ-ÿĀ-ž0-9][A-Za-zÀ-ÿĀ-ž0-9 .,'/-]{0,253}\\s*$",
+    })).toEqual({
+        type: 'string',
+        required: true,
+        nullable: false,
+    });
+});
