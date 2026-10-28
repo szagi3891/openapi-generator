@@ -134,6 +134,7 @@ const TypeIntegerZod = z.object({
     minimum: z.number().optional(), //ignore
     maximum: z.number().optional(), //ignore,
     default: z.number().optional(), //ignore
+    multipleOf: z.number().optional(), //ignore
 }).strict();
 
 const TypeNumberZod = z.object({
@@ -146,6 +147,7 @@ const TypeNumberZod = z.object({
     minimum: z.number().optional(), //ignore
     maximum: z.number().optional(), //ignore
     default: z.number().optional(), //ignore
+    multipleOf: z.number().optional(), //ignore
 }).strict();
 
 const TypeBooleanZod = z.object({

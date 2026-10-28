@@ -1225,3 +1225,15 @@ Deno.test('number with minimum', () => {
         nullable: false,
     });
 });
+
+Deno.test('number with multipleOf', () => {
+    expect(parseType(null, {
+        type: 'number',
+        multipleOf: 0.0001,
+        description: 'Gross total (netAmount + vatAmount), 4 decimals. Stripe charges it rounded half-up to 2 decimals.',
+    })).toEqual({
+        type: 'number',
+        required: true,
+        nullable: false,
+    });
+});
