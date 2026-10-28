@@ -70,6 +70,11 @@ export const getFromRef = (json: JSONValue, ref: string): JSONValue => {
 //     throw Error(result.message);
 // };
 
+/**
+ * A component with a `type` stays a reference, so it is rendered once as its own model. A named schema
+ * (`#/components/schemas/<Name>`) stays one whatever its shape: also a `oneOf` union or an OpenAPI 3.1 nullable type
+ * (`type: [X, 'null']`), which have no string `type`.
+ */
 export const isComponentsModelRef = (json: JSONValue, ref: string): boolean => {
     const path = convertRefPart(ref);
 
@@ -78,7 +83,7 @@ export const isComponentsModelRef = (json: JSONValue, ref: string): boolean => {
     if (name === 'components' && rest.length === 2) {
         const subJson = getFromRef(json, ref);
 
-        if (isJsonObject(subJson) && typeof subJson['type'] === 'string') {
+        if (isJsonObject(subJson) && (typeof subJson['type'] === 'string' || rest[0] === 'schemas')) {
             return true;
         }
     }

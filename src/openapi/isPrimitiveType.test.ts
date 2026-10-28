@@ -1,5 +1,5 @@
 import { expect } from '../lib.ts';
-import { convertRefPart, derefSchema, getFirstPrefixFromRef, getFromRef, isComponentsModelRef } from './isPrimitiveType.ts';
+import { convertRefPart, derefSchema, getFirstPrefixFromRef, getFromObjectByPath, getFromRef, isComponentsModelRef } from './isPrimitiveType.ts';
 
 const data = {
     'requestBodies': {
@@ -297,3 +297,46 @@ Deno.test('getFirstPrefixFromRef', () => {
 });
 
 
+
+const namedSchemas = {
+    components: {
+        schemas: {
+            AttributeValue: {
+                oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+            },
+            OptionalName: { type: ['string', 'null'] },
+            Product: {
+                type: 'object',
+                properties: {
+                    attributes: { type: 'object', additionalProperties: { $ref: '#/components/schemas/AttributeValue' } },
+                    nickname: { $ref: '#/components/schemas/OptionalName' },
+                },
+            },
+        },
+        responses: {
+            NotFound: { description: 'Not found' },
+        },
+    },
+    paths: {
+        '/products': { get: { responses: { '404': { $ref: '#/components/responses/NotFound' } } } },
+    },
+};
+
+// A oneOf union or an OpenAPI 3.1 nullable type has no string `type`; as a named schema it is still a model of its own.
+Deno.test('a named schema of any shape is a model reference', () => {
+    expect(isComponentsModelRef(namedSchemas, '#/components/schemas/AttributeValue')).toBe(true);
+    expect(isComponentsModelRef(namedSchemas, '#/components/schemas/OptionalName')).toBe(true);
+    expect(isComponentsModelRef(namedSchemas, '#/components/schemas/Product')).toBe(true);
+    expect(isComponentsModelRef(namedSchemas, '#/components/responses/NotFound')).toBe(false);
+});
+
+Deno.test('deref keeps references to named schemas and expands other components', () => {
+    const result = derefSchema(namedSchemas);
+
+    expect(getFromRef(result, '#/components/schemas/Product/properties/attributes/additionalProperties'))
+        .toEqual({ $ref: '#/components/schemas/AttributeValue' });
+    expect(getFromRef(result, '#/components/schemas/Product/properties/nickname'))
+        .toEqual({ $ref: '#/components/schemas/OptionalName' });
+    expect(getFromObjectByPath(result, ['paths', '/products', 'get', 'responses', '404']))
+        .toEqual({ description: 'Not found' });
+});

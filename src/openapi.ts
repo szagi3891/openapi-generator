@@ -2,7 +2,7 @@ import { SpecSourceType, JSONValue, EndpointSpecType } from './openapi/type.ts';
 import { parseContent } from './openapi/parseSpecContent.ts';
 import fs from 'node:fs';
 import { derefSchema, getFromObjectByPath } from './openapi/isPrimitiveType.ts';
-import { parseEndpointSpec } from './openapi/parseEndpointSpec/parseEndpointSpec.ts';
+import { getPathParameters, parseEndpointSpec } from './openapi/parseEndpointSpec/parseEndpointSpec.ts';
 import { renderEndpoint } from './openapi/render_template/renderEndpoint.ts';
 import { toBigCamelCase } from './openapi/render_template/toBigCamelCase.ts';
 import { renderModels } from './openapi/render_template/renderModels.ts';
@@ -55,7 +55,11 @@ export const taskGenerateOpenapi = async (
     const targetSpec = await requestedApiSpec.getTargetSpec();
 
     for (const [methodAlias, def] of Object.entries(targetSpec.endpoints)) {
-        const endpoint = parseEndpointSpec(openApiSpec, getFromObjectByPath(openApiSpec, ['paths', def.url, def.method]));
+        const endpoint = parseEndpointSpec(
+            openApiSpec,
+            getFromObjectByPath(openApiSpec, ['paths', def.url, def.method]),
+            getPathParameters(getFromObjectByPath(openApiSpec, ['paths', def.url])),
+        );
         endpointDefList.push(endpoint);
         const fileName = `api${toBigCamelCase(methodAlias)}`;
         

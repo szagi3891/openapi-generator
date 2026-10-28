@@ -1,6 +1,6 @@
 import { z } from '../../lib.ts';
 import { parseType, setRequired } from '../parseType.ts';
-import { OpenApiType, EndpointSpecType, JSONValue } from '../type.ts';
+import { OpenApiType, EndpointSpecType, JSONValue, isJsonObject } from '../type.ts';
 import { convertParameters } from './convertParameters.ts';
 
 const EndopointZod = z.object({
@@ -56,7 +56,39 @@ const convertResponses = (rawSpec: JSONValue, data: unknown): EndpointSpecType['
     return result;
 };
 
-export const parseEndpointSpec = (rawSpec: JSONValue, data: unknown): EndpointSpecType => {
+/** The `parameters` declared on the path item, shared by all its operations. */
+export const getPathParameters = (pathItem: JSONValue): Array<unknown> => {
+    if (!isJsonObject(pathItem)) {
+        return [];
+    }
+
+    const parameters = pathItem['parameters'];
+    return Array.isArray(parameters) ? parameters : [];
+};
+
+const ParameterKeyZod = z.object({
+    in: z.string(),
+    name: z.string(),
+});
+
+/** An operation's parameter overrides the path item's one with the same name and location, as OpenAPI defines. */
+const mergeParameters = (pathParameters: Array<unknown>, operationParameters: Array<unknown>): Array<unknown> => {
+    const key = (param: unknown): string | null => {
+        const safe = ParameterKeyZod.safeParse(param);
+        return safe.success ? `${safe.data.in}:${safe.data.name}` : null;
+    };
+    const overridden = new Set(operationParameters.map(key).filter((item) => item !== null));
+
+    return [
+        ...pathParameters.filter((param) => {
+            const paramKey = key(param);
+            return paramKey === null || !overridden.has(paramKey);
+        }),
+        ...operationParameters,
+    ];
+};
+
+export const parseEndpointSpec = (rawSpec: JSONValue, data: unknown, pathParameters: Array<unknown> = []): EndpointSpecType => {
     const safeData = EndopointZod.safeParse(data);
 
     // const safeData = DataZod.safeParse(data);
@@ -66,7 +98,7 @@ export const parseEndpointSpec = (rawSpec: JSONValue, data: unknown): EndpointSp
         throw Error('parseError');
     }
 
-    const parameters = convertParameters(rawSpec, safeData.data.parameters ?? []);
+    const parameters = convertParameters(rawSpec, mergeParameters(pathParameters, safeData.data.parameters ?? []));
 
     if (safeData.data.requestBody !== undefined) {
         const requestBody = convertRequestBody(rawSpec, safeData.data.requestBody);
