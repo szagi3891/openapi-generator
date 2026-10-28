@@ -1237,3 +1237,15 @@ Deno.test('number with multipleOf', () => {
         nullable: false,
     });
 });
+
+Deno.test('boolean with deprecated', () => {
+    expect(parseType(null, {
+        type: 'boolean',
+        deprecated: true,
+        description: 'Equal to system. Kept for one release (CORE-1030).',
+    })).toEqual({
+        type: 'boolean',
+        required: true,
+        nullable: false,
+    });
+});

@@ -88,6 +88,7 @@ const TypeRefZod = z.object({
 
 const TypeStringConstZod = z.object({
     type: z.literal('string'),
+    deprecated: z.boolean().optional(), //ignore
     const: z.string(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
@@ -103,6 +104,7 @@ const TypeStringConstWithoutTypeZod = z.object({
 
 const TypeStringEnumZod = z.object({
     type: z.literal('string'),
+    deprecated: z.boolean().optional(), //ignore
     enum: z.array(z.string()),
     nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
@@ -114,6 +116,7 @@ const TypeStringEnumZod = z.object({
 
 const TypeStringZod = z.object({
     type: z.literal('string'),
+    deprecated: z.boolean().optional(), //ignore
     nullable: z.boolean().optional(),
     minLength: z.number().optional(), //ignore
     description: z.string().optional(), //ignore
@@ -126,6 +129,7 @@ const TypeStringZod = z.object({
 
 const TypeIntegerZod = z.object({
     type: z.literal('integer'),
+    deprecated: z.boolean().optional(), //ignore
     format: z.string().optional(),
     nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
@@ -139,6 +143,7 @@ const TypeIntegerZod = z.object({
 
 const TypeNumberZod = z.object({
     type: z.literal('number'),
+    deprecated: z.boolean().optional(), //ignore
     format: z.string().optional(),
     nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
@@ -152,6 +157,7 @@ const TypeNumberZod = z.object({
 
 const TypeBooleanZod = z.object({
     type: z.literal('boolean'),
+    deprecated: z.boolean().optional(), //ignore
     nullable: z.boolean().optional(),
     title: z.string().optional(), //ignore
     description: z.string().optional(), //ignore
